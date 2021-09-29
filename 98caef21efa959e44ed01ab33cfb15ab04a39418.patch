@@ -1,0 +1,31 @@
+From 98caef21efa959e44ed01ab33cfb15ab04a39418 Mon Sep 17 00:00:00 2001
+From: Jake VanderPlas <vanderplas@google.com>
+Date: Tue, 31 Aug 2021 16:02:38 -0700
+Subject: [PATCH] Ensure values passed to jax.numpy functions are arrays rather
+ than lists.
+
+Why? This will soon be a requirement in JAX; see https://github.com/google/jax/issues/7737
+
+PiperOrigin-RevId: 394105499
+Change-Id: I6f76e3f47b7906616c1f988be58d29c828414060
+---
+ alphafold/model/folding.py | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/alphafold/model/folding.py b/alphafold/model/folding.py
+index 0b1c0d6..1faf5bd 100644
+--- a/alphafold/model/folding.py
++++ b/alphafold/model/folding.py
+@@ -750,10 +750,10 @@ def find_structural_violations(
+   # Compute the Van der Waals radius for every atom
+   # (the first letter of the atom name is the element type).
+   # Shape: (N, 14).
+-  atomtype_radius = [
++  atomtype_radius = jnp.array([
+       residue_constants.van_der_waals_radius[name[0]]
+       for name in residue_constants.atom_types
+-  ]
++  ])
+   atom14_atom_radius = batch['atom14_atom_exists'] * utils.batched_gather(
+       atomtype_radius, batch['residx_atom14_to_atom37'])
+ 
