@@ -40,6 +40,10 @@ WORKDIR /app
 RUN wget https://raw.githubusercontent.com/truatpasteurdotfr/localcolabfold/main/install_colabfold_linux.sh && bash install_colabfold_linux.sh
 #RUN wget https://raw.githubusercontent.com/YoshitakaMo/localcolabfold/main/install_colabfold_linux.sh && bash install_colabfold_linux.sh
 COPY runner.py-template .
+# https://github.com/YoshitakaMo/localcolabfold/issues/8#issuecomment-929696420
+# https://github.com/deepmind/alphafold/commit/98caef21efa959e44ed01ab33cfb15ab04a39418.patch
+COPY 98caef21efa959e44ed01ab33cfb15ab04a39418.patch .
+RUN patch /app/colabfold/alphafold/model/folding.py -i 98caef21efa959e44ed01ab33cfb15ab04a39418.patch
 # We need to run `ldconfig` first to ensure GPUs are visible, due to some quirk
 # with Debian. See https://github.com/NVIDIA/nvidia-docker/issues/1399 for
 # details.
