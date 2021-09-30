@@ -43,7 +43,7 @@ parser.add_argument("--max_recycles", default=3, type=int, help="controls the ma
 parser.add_argument("--tol", default=0, help="tolerance for deciding when to stop (CA-RMS between recycles)")
 parser.add_argument("--is_training", action='store_true',
                     help="enables the stochastic part of the model (dropout), when coupled with num_samples can be used to 'sample' a diverse set of structures. False (NOT specifying this option) is recommended at first.")
-parser.add_argument("--num_samples", default=1, help="number of random_seeds to try. Default is 1.")
+parser.add_argument("--num_samples", default=1, type=int, help="number of random_seeds to try. Default is 1.")
 parser.add_argument("--num_relax", default="None", choices=["None", "Top1", "Top5", "All"],
                     help="num_relax is 'None' (default), 'Top1', 'Top5' or 'All'. Specify how many of the top ranked structures to relax.")
 args = parser.parse_args()
@@ -318,7 +318,7 @@ msa_format = "fas" #@param ["fas","a2m","a3m","sto","psi","clu"]
 #@markdown - `add_custom_msa` - If enabled, you'll get an option to upload your custom MSA in the specified `msa_format`. Note: Your MSA will be supplemented with those from 'mmseqs2' or 'jackhmmer', unless `msa_method` is set to 'single_sequence'.
 
 # --set the output directory from command-line arguments
-pair_mode = "unpaired" #@param ["unpaired","unpaired+paired","paired"] {type:"string"}
+pair_mode = args.pair_mode #@param ["unpaired","unpaired+paired","paired"] {type:"string"}
 
 pair_cov = args.pair_cov #@param [0,25,50,75,90] {type:"raw"}
 pair_qid = args.pair_qid #@param [0,15,20,30,40,50] {type:"raw"}
