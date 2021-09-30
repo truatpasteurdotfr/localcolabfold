@@ -44,11 +44,12 @@ echo "Downloading AlphaFold2 trained parameters..."
 mkdir -p ${PARAMS_DIR}
 curl -fL ${SOURCE_URL} | tar x -C ${PARAMS_DIR}
 
-# echo "installing HH-suite 3.3.0..."
-# mkdir -p ${MSATOOLS}
-# git clone --branch v3.3.0 https://github.com/soedinglab/hh-suite.git hh-suite-3.3.0
-# (cd hh-suite-3.3.0 ; mkdir build ; cd build ; cmake -DCMAKE_INSTALL_PREFIX=${MSATOOLS}/hh-suite .. ; make -j4 ; make install)
-# rm -rf hh-suite-3.3.0
+echo "installing HH-suite 3.3.0..."
+export MSATOOLS=/opt/hhsuite
+mkdir -p ${MSATOOLS}
+git clone --branch v3.3.0 https://github.com/soedinglab/hh-suite.git hh-suite-3.3.0
+(cd hh-suite-3.3.0 && mkdir build && cd build && cmake  -DHAVE_SSE4_1=1 -DCMAKE_INSTALL_PREFIX=${MSATOOLS}/hh-suite .. && make -j4 && make install &&  ln -s /opt/hhsuite/bin/* /usr/bin/)
+rm -rf hh-suite-3.3.0
 
 # echo "installing HMMER 3.3.2..."
 # wget http://eddylab.org/software/hmmer/hmmer-3.3.2.tar.gz
