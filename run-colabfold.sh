@@ -16,6 +16,6 @@ python3.7 "$@"
 else
 echo "usage: singularity run --nv /path/to/your/localcolab.sif modified-runner.py"
 echo "usage: singularity run --nv /path/to/your/localcolab.sif runner_af2advanced.py --help "
-echo "wget https://raw.githubusercontent.com/YoshitakaMo/localcolabfold/main/runner_.py"
+echo "wget https://raw.githubusercontent.com/YoshitakaMo/localcolabfold/main/runner.py"
 echo "wget https://raw.githubusercontent.com/YoshitakaMo/localcolabfold/main/runner_af2advanced.py"
 fi
