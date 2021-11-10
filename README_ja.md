@@ -6,7 +6,7 @@
 
 ### Linux+GPUの場合
 
-1. ターミナル上で`curl`と`wget`コマンドがすでにインストールされていることを確認します。存在しない場合は先にこれらをインストールしてください。Ubuntuの場合はtype `sudo apt -y install curl wget`でインストールできます。
+1. ターミナル上で`curl`, `git`と`wget`コマンドがすでにインストールされていることを確認します。存在しない場合は先にこれらをインストールしてください。Ubuntuの場合はtype `sudo apt -y install curl git wget`でインストールできます。
 2. **Cuda compilerのバージョンが11.1以降であることを確認します。**<pre>$ nvcc --version
 nvcc: NVIDIA (R) Cuda compiler driver
 Copyright (c) 2005-2020 NVIDIA Corporation
@@ -38,7 +38,7 @@ arm64  # Apple Silicon
 #### Intel CPUのMacの場合
 
 1. [Homebrew](https://qiita.com/zaburo/items/29fe23c1ceb6056109fd)をインストールします:<pre>$ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</pre>
-2. Homebrweで`wget`コマンドをインストールします:<pre>$ brew install wget</pre>
+2. Homebrewで`wget`コマンドをインストールします:<pre>$ brew install wget</pre>
 3. `install_colabfold_intelmac.sh`をこのリポジトリからダウンロードします:<pre>$ wget https://raw.githubusercontent.com/YoshitakaMo/localcolabfold/main/install_colabfold_intelmac.sh</pre>これをインストールしたいディレクトリの上に置いた後、以下のコマンドを入力します:<pre>$ bash install_colabfold_intelmac.sh</pre>およそ5分後に`colabfold`ディレクトリができます。インストール後はこのディレクトリを移動させないでください。
 4. 残りの手順は"Linux+GPUの場合"と同様です.
 
@@ -64,34 +64,28 @@ It has not been properly tested on this platform and we cannot guarantee it prov
 
 このメッセージはApple Silicon上で動作させる時のみ現れますが、たぶん無視して大丈夫です。
 
-## runner_af2advanced.pyの使い方
+## `colabfold`コマンドの使い方（Linux向け）
 
-`runner_af2advanced.py`は`runner.py`の代わりにコマンドライン引数を取ることのできるPython実行スクリプトです。こちらはlocalcolabfoldを使ってより多くの配列を予測したいというユーザーに便利なスクリプトです。
+`colabfold`は`runner.py`の代わりにコマンドライン引数を取ることのできる実行可能シェルスクリプトです。こちらは共用計算機上に一度インストールするだけで済み、複数のユーザーがlocalcolabfoldを使ってより多くの配列を予測したい場合に有用です。
 
-1. `runner_af2advanced.py`をダウンロードして自身のcolabfoldディレクトリに置きます。`/path/to/colabfold`は適当にお使いのパソコン上の`colabfold`ディレクトリの場所に置き換えてください。<pre>$ cd <i>/path/to/</i>colabfold <br>$ wget https://raw.githubusercontent.com/YoshitakaMo/localcolabfold/main/runner_af2advanced.py</pre>
-2. 予測したいアミノ酸配列が含まれるFASTA形式のファイルを同ディレクトリに用意します。例として`6x9z.fasta`とします。
-3. コマンドライン引数とともに`runner_af2advanced.py`を実行します。例えばこんな感じ<br><pre># python3.7 for Linux and Intel Mac Users, otherwise python3.8
-$ colabfold-conda/bin/python3.7 runner_af2advanced.py \\
-    --input 6x9z.fasta \\
-    --output_dir 6x9z \\
-    --max_recycle 18 \\
-    --use_ptm \\
-    --use_turbo \\
-    --num_relax Top5
-</pre>ここで`6x9z.fasta`の中身は<pre>>6X9Z_1|Chain A|Transmembrane beta-barrels|synthetic construct (32630)
-MEQKPGTLMVYVVVGYNTDNTVDVVGGAQYAVSPYLFLDVGYGWNNSSLNFLEVGGGVSYKVSPDLEPYVKAGFEYNTDNTIKPTAGAGALYRVSPNLALMVEYGWNNSSLQKVAIGIAYKVKD
-</pre>としています。上記コマンドは*de novo*タンパク質構造[PDB: 6X9Z](https://www.rcsb.org/structure/6x9z)を予想するときに、'recycling'回数を最大18回まで引き上げています。この回数の引き上げは*de novo*タンパク質構造を予測する時には効果的であることが示されています（通常のタンパク質は3回で十分なことがほとんどです）。<br>他の入力例として, [PDB: 3KUD](https://www.rcsb.org/structure/3KUD)の**複合体予測**を行おうとするときは<pre># python3.7 for Linux and Intel Mac Users, otherwise python3.8
-$ colabfold-conda/bin/python3.7 runner_af2advanced.py \\
-    --input 3kud_complex.fasta \\
-    --output_dir 3kud \\
-    --homooligomer 1:1 \\
-    --use_ptm \\
-    --use_turbo \\
-    --max_recycle 3 \\
-    --num_relax Top5</pre>ここで入力配列`3kud_complex.fasta`は以下の通りです。<pre>>3KUD_complex
-MTEYKLVVVGAGGVGKSALTIQLIQNHFVDEYDPTIEDSYRKQVVIDGETCLLDILDTAGQEEYSAMRDQYMRTGEGFLCVFAINNTKSFEDIHQYREQIKRVKDSDDVPMVLVGNKCDLAARTVESRQAQDLARSYGIPYIETSAKTRQGVEDAFYTLVREIRQH:
-PSKTSNTIRVFLPNKQRTVVNVRNGMSLHDCLMKALKVRGLQPECCAVFRLLHEHKGKKARLDWNTDAASLIGEELQVDFL
-</pre>`:`記号で隔てることで複合体予測をすることができます。この場合はヘテロ複合体予測になっています。ホモオリゴマー予測を行いたいときなど、他の設定については`colabfold-conda/bin/python3.7 runner_af2advanced.py --help`で設定方法を読むか、オリジナルの[ColabFold / AlphaFold2_advanced](https://colab.research.google.com/github/sokrypton/ColabFold/blob/main/beta/AlphaFold2_advanced.ipynb)にある説明を読んでください。
+1. 予測したいアミノ酸配列が含まれるFASTA形式のファイルを同ディレクトリに用意します。例として`6x9z.fasta`とします。<pre>>6X9Z_1|Chain A|Transmembrane beta-barrels|synthetic construct (32630)
+MEQKPGTLMVYVVVGYNTDNTVDVVGGAQYAVSPYLFLDVGYGWNNSSLNFLEVGGGVSYKVSPDLEPYVKAGFEYNTDNTIKPTAGAGALYRVSPNLALMVEYGWNNSSLQKVAIGIAYKVKD</pre>
+1. `export PATH="/path/to/colabfold/bin:$PATH"`と打つことで環境変数PATHにこのcolabfoldシェルスクリプトのファイルパスを設定します。例えばLocalColabFoldを`/home/foo/bar/colabfold`にインストールした場合は、`export PATH="/home/foo/bar/colabfold/bin:$PATH"`と入力します。
+1. 入力のアミノ酸配列ファイルを`--input`の引数に指定し、`colabfold`コマンドを実行します。例えばこんな感じ<pre>$ colabfold --input 6x9z.fasta \\
+   --output_dir 6x9z \\
+   --max_recycle 18 \\
+   --use_ptm \\
+   --use_turbo \\
+   --num_relax Top5</pre>上記コマンドは*de novo*タンパク質構造[PDB: 6X9Z](https://www.rcsb.org/structure/6x9z)を予想するときに、'recycling'回数を最大18回まで引き上げています。この回数の引き上げは*de novo*タンパク質構造を予測する時には効果的であることが示されています（通常のタンパク質は3回で十分なことがほとんどです）。<br>他の入力例として, [PDB: 3KUD](https://www.rcsb.org/structure/3KUD)の**複合体予測**を行おうとするときは<pre>$ colabfold --input 3kud_complex.fasta \\
+   --output_dir 3kud \\
+   --homooligomer 1:1 \\
+   --use_ptm \\
+   --use_turbo \\
+   --max_recycle 3 \\
+   --num_relax Top5</pre>ここで入力配列`3kud_complex.fasta`は以下の通りです。<pre>>3KUD_complex
+   MTEYKLVVVGAGGVGKSALTIQLIQNHFVDEYDPTIEDSYRKQVVIDGETCLLDILDTAGQEEYSAMRDQYMRTGEGFLCVFAINNTKSFEDIHQYREQIKRVKDSDDVPMVLVGNKCDLAARTVESRQAQDLARSYGIPYIETSAKTRQGVEDAFYTLVREIRQH:
+   PSKTSNTIRVFLPNKQRTVVNVRNGMSLHDCLMKALKVRGLQPECCAVFRLLHEHKGKKARLDWNTDAASLIGEELQVDFL
+   </pre>`:`記号でアミノ酸配列を隔てることで複合体予測をすることができます。この場合はヘテロ複合体予測になっています。ホモオリゴマー予測を行いたいときなど、他の設定については`colabfold --help`で設定方法を読むか、オリジナルの[ColabFold / AlphaFold2_advanced](https://colab.research.google.com/github/sokrypton/ColabFold/blob/main/beta/AlphaFold2_advanced.ipynb)にある説明を読んでください。
 
 ## LocalColabFoldを利用するメリット
 
@@ -124,14 +118,16 @@ PSKTSNTIRVFLPNKQRTVVNVRNGMSLHDCLMKALKVRGLQPECCAVFRLLHEHKGKKARLDWNTDAASLIGEELQVDF
   - [WSL2](https://docs.microsoft.com/en-us/windows/wsl/install-win10)を入れればWindows 10の上でも同様に動作させることができます。
 
 ## Tutorials & Presentations
+
 - ColabFold Tutorial presented at the Boston Protein Design and Modeling Club. [[video]](https://www.youtube.com/watch?v=Rfw7thgGTwI) [[slides]](https://docs.google.com/presentation/d/1mnffk23ev2QMDzGZ5w1skXEadTe54l8-Uei6ACce8eI).
 
 ## Acknowledgments
-- The original colabfold was created by Sergey Ovchinnikov ([@sokrypton](https://twitter.com/sokrypton)), Milot Mirdita ([@milot_mirdita](https://twitter.com/milot_mirdita)) and Martin Steinegger ([@thesteinegger](https://twitter.com/thesteinegger)).
+
+- The original colabfold was first created by Sergey Ovchinnikov ([@sokrypton](https://twitter.com/sokrypton)), Milot Mirdita ([@milot_mirdita](https://twitter.com/milot_mirdita)) and Martin Steinegger ([@thesteinegger](https://twitter.com/thesteinegger)).
 
 ## How do I reference this work?
 
-- Mirdita M, Ovchinnikov S and Steinegger M. ColabFold - Making protein folding accessible to all. *bioRxiv*, doi: [10.1101/2021.08.15.456425](https://www.biorxiv.org/content/10.1101/2021.08.15.456425) (2021)<br>*I, Yoshitaka Moriwaki, am credited in the acknowlegment of the paper.*
+- Mirdita M, Schuetze K, Moriwaki Y, Heo L, Ovchinnikov S and Steinegger M. ColabFold - Making protein folding accessible to all. *bioRxiv*, doi: [10.1101/2021.08.15.456425](https://www.biorxiv.org/content/10.1101/2021.08.15.456425v2) (2021)
 - John Jumper, Richard Evans, Alexander Pritzel, et al. -  Highly accurate protein structure prediction with AlphaFold. *Nature*, 1–11, doi: [10.1038/s41586-021-03819-2](https://www.nature.com/articles/s41586-021-03819-2) (2021)
 
 

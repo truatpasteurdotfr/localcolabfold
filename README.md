@@ -6,8 +6,8 @@
 
 ### For Linux
 
-1. Make sure `curl` and `wget` commands are already installed on your PC. If not present, you need install them at first. For Ubuntu, type `sudo apt -y install curl wget`.
-1. Make sure your Cuda compiler driver is **11.1 or later**:<pre>$ nvcc --version
+1. Make sure `curl`, `git`, and `wget` commands are already installed on your PC. If not present, you need install them at first. For Ubuntu, type `sudo apt -y install curl git wget`.
+2. Make sure your Cuda compiler driver is **11.1 or later**:<pre>$ nvcc --version
 nvcc: NVIDIA (R) Cuda compiler driver
 Copyright (c) 2005-2020 NVIDIA Corporation
 Built on Mon_Oct_12_20:09:46_PDT_2020
@@ -61,34 +61,27 @@ It has not been properly tested on this platform and we cannot guarantee it prov
 
 This message is due to Apple Silicon, but I think we can ignore it.
 
-## Usage of runner_af2advanced.py
+## Usage of `colabfold` shell script (Linux)
 
-`runner_af2advanced.py` is a python script that can take command-line arguments. This is more helpful for users who want to predict many sequences.
+An executable `colabfold` shell script is installed in `/path/to/colabfold/bin` directory. This is more helpful for installation on a shared computer and users who want to predict many sequences.
 
-1. Download `runner_af2advanced.py` on your colabfold directory:<pre>$ cd <i>/path/to/</i>colabfold <br>$ wget https://raw.githubusercontent.com/YoshitakaMo/localcolabfold/main/runner_af2advanced.py</pre>
-1. Place a FASTA file that contains the sequence you want to predict (e.g. 6x9z.fasta).
-1. run the file with command-line arguments. For example,<br><pre># python3.7 for Linux and Intel Mac Users, otherwise python3.8
-$ colabfold-conda/bin/python3.7 runner_af2advanced.py \\
-    --input 6x9z.fasta \\
-    --output_dir 6x9z \\
-    --max_recycle 18 \\
-    --use_ptm \\
-    --use_turbo \\
-    --num_relax Top5
-</pre>where the input sequence `6x9z.fasta` is <pre>>6X9Z_1|Chain A|Transmembrane beta-barrels|synthetic construct (32630)
-MEQKPGTLMVYVVVGYNTDNTVDVVGGAQYAVSPYLFLDVGYGWNNSSLNFLEVGGGVSYKVSPDLEPYVKAGFEYNTDNTIKPTAGAGALYRVSPNLALMVEYGWNNSSLQKVAIGIAYKVKD
-</pre>This will predict a protein structure [6x9z](https://www.rcsb.org/structure/6x9z) with increasing the number of 'recycling' to 18. This may be effective for *de novo* structure prediction. For another example, [PDB: 3KUD](https://www.rcsb.org/structure/3KUD), <pre># python3.7 for Linux and Intel Mac Users, otherwise python3.8
-$ colabfold-conda/bin/python3.7 runner_af2advanced.py \\
-    --input 3kud_complex.fasta \\
-    --output_dir 3kud \\
-    --homooligomer 1:1 \\
-    --use_ptm \\
-    --use_turbo \\
-    --max_recycle 3 \\
-    --num_relax Top5</pre>where the input sequence `3kud_complex.fasta` is<pre>>3KUD_complex
-MTEYKLVVVGAGGVGKSALTIQLIQNHFVDEYDPTIEDSYRKQVVIDGETCLLDILDTAGQEEYSAMRDQYMRTGEGFLCVFAINNTKSFEDIHQYREQIKRVKDSDDVPMVLVGNKCDLAARTVESRQAQDLARSYGIPYIETSAKTRQGVEDAFYTLVREIRQH:
-PSKTSNTIRVFLPNKQRTVVNVRNGMSLHDCLMKALKVRGLQPECCAVFRLLHEHKGKKARLDWNTDAASLIGEELQVDFL
-</pre>This will predict a hetelooligomer. For more information about the options, type `colabfold-conda/bin/python3.7 runner_af2advanced.py --help` or refer to the original [ColabFold / AlphaFold2_advanced](https://colab.research.google.com/github/sokrypton/ColabFold/blob/main/beta/AlphaFold2_advanced.ipynb).
+1. Prepare a FASTA file containing the amino acid sequence for which you want to predict the structure (e.g. `6x9z.fasta`).<pre>>6X9Z_1|Chain A|Transmembrane beta-barrels|synthetic construct (32630)
+MEQKPGTLMVYVVVGYNTDNTVDVVGGAQYAVSPYLFLDVGYGWNNSSLNFLEVGGGVSYKVSPDLEPYVKAGFEYNTDNTIKPTAGAGALYRVSPNLALMVEYGWNNSSLQKVAIGIAYKVKD</pre>
+2. Type `export PATH="/path/to/colabfold/bin:$PATH"` to add a path to the PATH environment variable. For example, `export PATH="/home/foo/bar/colabfold/bin:$PATH"` if you installed localcolabfold on `/home/foo/bar/colabfold`.
+3. Run colabfold command with your FASTA file. For example,<pre>$ colabfold --input 6x9z.fasta \\
+   --output_dir 6x9z \\
+   --max_recycle 18 \\
+   --use_ptm \\
+   --use_turbo \\
+   --num_relax Top5</pre>This will predict a protein structure [6x9z](https://www.rcsb.org/structure/6x9z) with increasing the number of 'recycling' to 18. This may be effective for *de novo* structure prediction. For another example, [PDB: 3KUD](https://www.rcsb.org/structure/3KUD), <pre>$ colabfold --input 3kud_complex.fasta \\
+   --output_dir 3kud \\
+   --homooligomer 1:1 \\
+   --use_ptm \\
+   --use_turbo \\
+   --max_recycle 3 \\
+   --num_relax Top5</pre>where the input sequence `3kud_complex.fasta` is<pre>>3KUD_complex
+   MTEYKLVVVGAGGVGKSALTIQLIQNHFVDEYDPTIEDSYRKQVVIDGETCLLDILDTAGQEEYSAMRDQYMRTGEGFLCVFAINNTKSFEDIHQYREQIKRVKDSDDVPMVLVGNKCDLAARTVESRQAQDLARSYGIPYIETSAKTRQGVEDAFYTLVREIRQH:
+   PSKTSNTIRVFLPNKQRTVVNVRNGMSLHDCLMKALKVRGLQPECCAVFRLLHEHKGKKARLDWNTDAASLIGEELQVDFL</pre>This will predict a heterooligomer. For more information about the options, type `colabfold --help` or refer to the original [ColabFold / AlphaFold2_advanced](https://colab.research.google.com/github/sokrypton/ColabFold/blob/main/beta/AlphaFold2_advanced.ipynb).
 
 ## Advantages of LocalColabFold
 - **Structure inference and relaxation will be accelerated if your PC has Nvidia GPU and CUDA drivers.**
@@ -119,16 +112,16 @@ PSKTSNTIRVFLPNKQRTVVNVRNGMSLHDCLMKALKVRGLQPECCAVFRLLHEHKGKKARLDWNTDAASLIGEELQVDF
   - You can run LocalColabFold on your Windows 10 with [WSL2](https://docs.microsoft.com/en-us/windows/wsl/install-win10).
 
 ## Tutorials & Presentations
+
 - ColabFold Tutorial presented at the Boston Protein Design and Modeling Club. [[video]](https://www.youtube.com/watch?v=Rfw7thgGTwI) [[slides]](https://docs.google.com/presentation/d/1mnffk23ev2QMDzGZ5w1skXEadTe54l8-Uei6ACce8eI).
 
 ## Acknowledgments
-- The original colabfold was created by Sergey Ovchinnikov ([@sokrypton](https://twitter.com/sokrypton)), Milot Mirdita ([@milot_mirdita](https://twitter.com/milot_mirdita)) and Martin Steinegger ([@thesteinegger](https://twitter.com/thesteinegger)).
+
+- The original colabfold was first created by Sergey Ovchinnikov ([@sokrypton](https://twitter.com/sokrypton)), Milot Mirdita ([@milot_mirdita](https://twitter.com/milot_mirdita)) and Martin Steinegger ([@thesteinegger](https://twitter.com/thesteinegger)).
 
 ## How do I reference this work?
 
-- Mirdita M, Ovchinnikov S and Steinegger M. ColabFold - Making protein folding accessible to all. *bioRxiv*, doi: [10.1101/2021.08.15.456425](https://www.biorxiv.org/content/10.1101/2021.08.15.456425) (2021)<br>*I, Yoshitaka Moriwaki, am credited in the acknowlegment of the paper.*
+- Mirdita M, Schuetze K, Moriwaki Y, Heo L, Ovchinnikov S and Steinegger M. ColabFold - Making protein folding accessible to all. *bioRxiv*, doi: [10.1101/2021.08.15.456425](https://www.biorxiv.org/content/10.1101/2021.08.15.456425v2) (2021)
 - John Jumper, Richard Evans, Alexander Pritzel, et al. -  Highly accurate protein structure prediction with AlphaFold. *Nature*, 1–11, doi: [10.1038/s41586-021-03819-2](https://www.nature.com/articles/s41586-021-03819-2) (2021)
-
-
 
 [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.5123296.svg)](https://doi.org/10.5281/zenodo.5123296)

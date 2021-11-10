@@ -36,12 +36,13 @@ MSATOOLS="${COLABFOLDDIR}/tools"
 echo "downloading the original alphafold as ${COLABFOLDDIR}..."
 rm -rf ${COLABFOLDDIR}
 git clone ${GIT_REPO} ${COLABFOLDDIR}
-(cd ${COLABFOLDDIR}; git checkout 1e216f93f06aa04aa699562f504db1d02c3b704c --quiet)
+(cd ${COLABFOLDDIR}; git checkout 1d43aaff941c84dc56311076b58795797e49107b --quiet)
 
 # colabfold patches
 echo "Applying several patches to be Alphafold2_advanced..."
 cd ${COLABFOLDDIR}
 wget -qnc https://raw.githubusercontent.com/sokrypton/ColabFold/main/beta/colabfold.py
+wget -qnc https://raw.githubusercontent.com/sokrypton/ColabFold/main/beta/colabfold_alphafold.py
 wget -qnc https://raw.githubusercontent.com/sokrypton/ColabFold/main/beta/pairmsa.py
 wget -qnc https://raw.githubusercontent.com/sokrypton/ColabFold/main/beta/protein.patch
 wget -qnc https://raw.githubusercontent.com/sokrypton/ColabFold/main/beta/config.patch
