@@ -39,7 +39,6 @@ RUN mkdir /app
 WORKDIR /app
 RUN wget https://raw.githubusercontent.com/truatpasteurdotfr/localcolabfold/main/install_colabfold_linux.sh && bash install_colabfold_linux.sh
 #RUN wget https://raw.githubusercontent.com/YoshitakaMo/localcolabfold/main/install_colabfold_linux.sh && bash install_colabfold_linux.sh
-COPY runner.py-template .
 
 # We need to run `ldconfig` first to ensure GPUs are visible, due to some quirk
 # with Debian. See https://github.com/NVIDIA/nvidia-docker/issues/1399 for
