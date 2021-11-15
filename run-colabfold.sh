@@ -1,4 +1,6 @@
 #!/bin/bash
+# 2021/11/15 adapted from /app/colabfold/bin/colabfold
+# force bash syntax for conda
 export CONDA_ROOT=/app/colabfold/conda
 eval "$(${CONDA_ROOT}/bin/conda shell.bash hook)"
 export COLABFOLDDIR=/app/colabfold
@@ -11,11 +13,6 @@ ln -s /app/colabfold/alphafold
 fi
 
 if [ $# -ge 1 ]; then
-echo running python3.7 "$@" from conda  ${COLABFOLDDIR}/colabfold-conda env
-python3.7 "$@"
-else
-echo "usage: singularity run --nv /path/to/your/localcolab.sif modified-runner.py"
-echo "usage: singularity run --nv /path/to/your/localcolab.sif runner_af2advanced.py --help "
-echo "wget https://raw.githubusercontent.com/YoshitakaMo/localcolabfold/main/runner.py"
-echo "wget https://raw.githubusercontent.com/YoshitakaMo/localcolabfold/main/runner_af2advanced.py"
+echo running python3.7 ${COLABFOLDDIR}/runner_af2advanced.py "$@" from conda  ${COLABFOLDDIR}/colabfold-conda env
+python3.7 ${COLABFOLDDIR}/runner_af2advanced.py "$@"
 fi
