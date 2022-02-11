@@ -38,7 +38,7 @@ RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \
 
 RUN mkdir /app
 WORKDIR /app
-RUN wget https://raw.githubusercontent.com/truatpasteurdotfr/localcolabfold/main/install_colabfold_linux.sh && bash install_colabfold_linux.sh
+RUN wget https://raw.githubusercontent.com/truatpasteurdotfr/localcolabfold/main/install_colabbatch_linux.sh && bash install_colabbatch_linux.sh
 #RUN wget https://raw.githubusercontent.com/YoshitakaMo/localcolabfold/main/install_colabfold_linux.sh && bash install_colabfold_linux.sh
 
 # We need to run `ldconfig` first to ensure GPUs are visible, due to some quirk
