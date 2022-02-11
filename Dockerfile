@@ -15,13 +15,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ARG CUDA=11.1
-ARG CUDA_M=1
+ARG CUDA=11.2
+ARG CUDA_M=2
 FROM nvidia/cuda:${CUDA}.${CUDA_M}-cudnn8-runtime-ubuntu18.04
 # FROM directive resets ARGS, so we specify again (the value is retained if
 # previously set).
 ARG CUDA
 ARG CUDA_M
+ARG CUDA_JAX=11.1
 
 # Use bash to support string substitution.
 SHELL ["/bin/bash", "-c"]
