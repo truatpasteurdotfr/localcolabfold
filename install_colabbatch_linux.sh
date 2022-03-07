@@ -27,6 +27,8 @@ wget -qnc https://raw.githubusercontent.com/YoshitakaMo/localcolabfold/main/upda
 chmod +x update_linux.sh
 # install alignment tools
 conda install -c conda-forge -c bioconda kalign3=3.2.2 hhsuite=3.3.0 -y
+# Tru: possible missing chardet 2022/03/07
+conda install chardet  -y
 # install ColabFold and Jaxlib
 colabfold-conda/bin/python3.7 -m pip install "colabfold[alphafold] @ git+https://github.com/sokrypton/ColabFold"
 colabfold-conda/bin/python3.7 -m pip install https://storage.googleapis.com/jax-releases/cuda111/jaxlib-0.1.72+cuda111-cp37-none-manylinux2010_x86_64.whl

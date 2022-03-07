@@ -46,4 +46,4 @@ RUN wget https://raw.githubusercontent.com/truatpasteurdotfr/localcolabfold/main
 # details.
 # ENTRYPOINT does not support easily running multiple commands, so instead we
 # write a shell script to wrap them up.
-WORKDIR /app/colabfold
+WORKDIR /app/colabfold_batch
