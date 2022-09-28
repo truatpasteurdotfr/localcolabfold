@@ -29,7 +29,6 @@ COLABFOLDDIR="${CURRENTPATH}/colabfold_batch"
 
 mkdir -p ${COLABFOLDDIR}
 cd ${COLABFOLDDIR}
-wget https://git.scicore.unibas.ch/schwede/openstructure/-/raw/7102c63615b64735c4941278d92b554ec94415f8/modules/mol/alg/src/stereo_chemical_props.txt --no-check-certificate
 wget -q -P . https://repo.anaconda.com/miniconda/Miniconda3-latest-MacOSX-x86_64.sh
 bash ./Miniconda3-latest-MacOSX-x86_64.sh -b -p ${COLABFOLDDIR}/conda
 rm Miniconda3-latest-MacOSX-x86_64.sh
@@ -39,17 +38,13 @@ conda create -p $COLABFOLDDIR/colabfold-conda python=3.7 -y
 conda activate $COLABFOLDDIR/colabfold-conda
 conda update -n base conda -y
 conda install -c conda-forge python=3.7 openmm==7.5.1 pdbfixer -y
-# patch to openmm
-wget -qnc https://raw.githubusercontent.com/deepmind/alphafold/main/docker/openmm.patch --no-check-certificate
-(cd ${COLABFOLDDIR}/colabfold-conda/lib/python3.7/site-packages; patch -s -p0 < ${COLABFOLDDIR}/openmm.patch)
-rm openmm.patch
 # Download the updater
 wget -qnc https://raw.githubusercontent.com/YoshitakaMo/localcolabfold/main/update_intelmac.sh --no-check-certificate
 chmod +x update_intelmac.sh
 # install ColabFold and Jaxlib
 colabfold-conda/bin/python3.7 -m pip install "colabfold[alphafold] @ git+https://github.com/sokrypton/ColabFold"
-colabfold-conda/bin/python3.7 -m pip install https://storage.googleapis.com/jax-releases/mac/jaxlib-0.1.74-cp37-none-macosx_10_9_x86_64.whl
-colabfold-conda/bin/python3.7 -m pip install jax==0.2.25
+colabfold-conda/bin/python3.7 -m pip install https://storage.googleapis.com/jax-releases/mac/jaxlib-0.3.10-cp37-none-macosx_10_9_x86_64.whl
+colabfold-conda/bin/python3.7 -m pip install jax==0.3.13
 
 # bin directory to run
 mkdir -p $COLABFOLDDIR/bin
@@ -61,9 +56,6 @@ export PATH="\${COLABFOLDDIR}/colabfold-conda/bin:\$PATH"
 \$COLABFOLDDIR/colabfold-conda/bin/colabfold_batch --cpu \$@
 EOF
 chmod +x colabfold_batch
-
-# hack to share the parameter files in a workstation.
-gsed -i -e "s#props_path = \"stereo_chemical_props.txt\"#props_path = \"${COLABFOLDDIR}/stereo_chemical_props.txt\"#" ${COLABFOLDDIR}/colabfold-conda/lib/python3.7/site-packages/colabfold/batch.py
 
 echo "-----------------------------------------"
 echo "Installation of colabfold_batch finished."

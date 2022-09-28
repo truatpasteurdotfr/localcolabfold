@@ -2,6 +2,10 @@
 
 [ColabFold](https://colab.research.google.com/github/sokrypton/ColabFold/blob/main/AlphaFold2.ipynb) on your local PC (or macOS). See also [ColabFold repository](https://github.com/sokrypton/ColabFold).
 
+## What is LocalColabFold?
+
+LocalColabFold is an installer script designed to make ColabFold functionality available on local users' machines. It supports wide range of operating systems, such as Windows 10 or later (using Windows Subsystem for Linux 2), macOS, and Linux.
+
 ## Advantages of LocalColabFold
 
 - **Structure inference and relaxation will be accelerated if your PC has Nvidia GPU and CUDA drivers.**
@@ -9,8 +13,30 @@
 - **No GPU limitations**
 - **NOT necessary to prepare the large database required for native AlphaFold2**.
 
+## Note (Jun 18, 2022)
+
+ColabFold now depends on [JAX](https://github.com/google/jax) == 0.3.13 and jaxlib > 0.3.7, so you may encounter this error message after updating your localcolabfold using `./update_linux.sh`:
+
+```
+  File "/path/to/colabfold_batch/colabfold-conda/lib/python3.7/site-packages/jax/_src/lib/__init__.py", line 91, in check_jaxlib_version
+    raise RuntimeError(msg)
+RuntimeError: jaxlib is version 0.1.72, but this version of jax requires version >= 0.3.7.
+```
+
+To fix this issue, please upgrade your jax and jaxlib:
+
+```bash
+# '/path/to/your/colabfold_batch' should be substituted to your path, e.g. '/home/moriwaki/Desktop/colabfold_batch'
+# install GPU-supported jaxlib
+/path/to/your/colabfold_batch/colabfold-conda/bin/python3.7 -m pip install https://storage.googleapis.com/jax-releases/cuda11/jaxlib-0.3.10+cuda11.cudnn82-cp37-none-manylinux2014_x86_64.whl
+/path/to/your/colabfold_batch/colabfold-conda/bin/python3.7 -m pip install jax==0.3.13
+```
+
 ## New Updates
 
+- 16Jun2022, version 1.4.0 released. See [Release v1.4.0](https://github.com/YoshitakaMo/localcolabfold/releases/tag/v1.4.0)
+- 07May2022, **Updated `update_linux.sh`.** See also [How to update](#how-to-update). Please use a new option `--use-gpu-relax` if GPU relaxation is required (recommended).
+- 12Apr2022, version 1.3.0 released. See [Release v1.3.0](https://github.com/YoshitakaMo/localcolabfold/releases/tag/v1.3.0)
 - 09Dec2021, version 1.2.0-beta released. easy-to-use updater scripts added. See [How to update](#how-to-update).
 - 04Dec2021, LocalColabFold is now compatible with the latest [pip installable ColabFold](https://github.com/sokrypton/ColabFold#running-locally). In this repository, I will provide a script to install ColabFold with some external parameter files to perform relaxation with AMBER. The weight parameters of AlphaFold and AlphaFold-Multimer will be downloaded automatically at your first run.
 
@@ -41,9 +67,9 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 2. Add environment variable PATH:<pre># For bash or zsh<br># e.g. export PATH="/home/moriwaki/Desktop/colabfold_batch/bin:\$PATH"<br>export PATH="<COLABFOLDBATCH_DIR>/bin:\$PATH"</pre>
 It is recommended to add this export command to \~/.bashrc and restart bash (\~/.bashrc will be executed every time bash is started)
 
-3. To run the prediction, type <pre>colabfold_batch --amber --templates --num-recycle 3 inputfile outputdir/ </pre>The result files will be created in the `outputdir`. 
-Just use cpu to run the prediction, type <pre>colabfold_batch --amber --templates --num-recycle 3 inputfile outputdir/ --cpu</pre>
-To run the AlphaFold2-multimer, type <pre>colabfold_batch --amber --templates --num-recycle 3 --model-type AlphaFold2-multimer inputfile outputdir/</pre>
+3. To run the prediction, type <pre>colabfold_batch --amber --templates --num-recycle 3 --use-gpu-relax inputfile outputdir/ </pre>The result files will be created in the `outputdir`.
+Just use cpu to run the prediction, type <pre>colabfold_batch --amber --templates --num-recycle 3 --use-gpu-relax inputfile outputdir/ --cpu</pre>
+To run the AlphaFold2-multimer, type <pre>colabfold_batch --amber --templates --num-recycle 3 --use-gpu-relax --model-type AlphaFold2-multimer inputfile outputdir/</pre>
 The inputfile can be in csv format like this<pre>id,sequence
 Complex,\<SEQUENCE\>:\<SEQUENCE\>:\<SEQUENCE\>:\<SEQUENCE\></pre>
 replace \<SEQUENCE\> with your sequence
@@ -61,8 +87,7 @@ export XLA_PYTHON_CLIENT_ALLOCATOR="platform"
 export TF_FORCE_GPU_ALLOW_GROWTH="true"
 ```
 
-It is recommended to add these export commands to \~/.bashrc and restart bash (\~/.bashrc will be executed every time bash is started)
-
+It is recommended to add these export commands to `~/.bashrc` and restart bash (`~/.bashrc` will be executed every time bash is started)
 
 ### For macOS
 
@@ -90,10 +115,10 @@ Please use the correct installer for your Mac.
 **Note: This installer is experimental because most of the dependent packages are not fully tested on Apple Silicon Mac.**
 
 1. Install [Homebrew](https://brew.sh/index_ja) if not present:<pre>$ /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</pre>
-1. Install several commands using Homebrew (currently kalign can't be installed, but no effects):<pre>$ brew install wget cmake gnu-sed<br>$ brew install brewsci/bio/hh-suite</pre>
-1. Install `miniforge` command using Homebrew:<pre>$ brew install --cask miniforge</pre>
-1. Download `install_colabbatch_M1mac.sh` from this repository:<pre>$ wget https://raw.githubusercontent.com/YoshitakaMo/localcolabfold/main/install_colabbatch_M1mac.sh</pre> and run it in the directory where you want to install:<pre>$ bash install_colabbatch_M1mac.sh</pre>About 5 minutes later, `colabfold_batch` directory will be created. Do not move this directory after the installation. **You can ignore the installation errors that appear along the way**.
-2. The rest procedure is the same as "For Linux".
+2. Install several commands using Homebrew (Now kalign 3.3.2 is available!):<pre>$ brew install wget cmake gnu-sed<br>$ brew install brewsci/bio/hh-suite<br>$ brew install brewsci/bio/kalign</pre>
+3. Install `miniforge` command using Homebrew:<pre>$ brew install --cask miniforge</pre>
+4. Download `install_colabbatch_M1mac.sh` from this repository:<pre>$ wget https://raw.githubusercontent.com/YoshitakaMo/localcolabfold/main/install_colabbatch_M1mac.sh</pre> and run it in the directory where you want to install:<pre>$ bash install_colabbatch_M1mac.sh</pre>About 5 minutes later, `colabfold_batch` directory will be created. Do not move this directory after the installation. **You can ignore the installation errors that appear along the way**.
+5. The rest procedure is the same as "For Linux".
 
 A Warning message appeared when you run the prediction:
 ```
@@ -106,24 +131,18 @@ This message is due to Apple Silicon, but I think we can ignore it.
 
 ## How to update
 
-Because [ColabFold](https://github.com/sokrypton/ColabFold) is still a work in progress, the localcolabfold should be also updated frequently to use the latest features. I will provide an easy-to-use update script.
+Since [ColabFold](https://github.com/sokrypton/ColabFold) is still a work in progress, your localcolabfold should be also updated frequently to use the latest features. An easy-to-use update script is provided for this purpose.
 
 To update your localcolabfold, simply type in the `colabfold_batch` directory:
 
 ```bash
-$ ./update_linux.sh . # if Linux
-$ ./update_intelmac.sh . # if Intel Mac
-$ ./update_M1mac.sh . # if M1 Mac
-```
-
-Or, if you have already installed localcolabfold before, please download the updater from this repository and execute it.
-
-```bash
 # set your OS. Select one of the following variables {linux,intelmac,M1mac}
 $ OS=linux # if Linux
-$ wget https://raw.githubusercontent.com/YoshitakaMo/localcolabfold/main/update_${OS}.sh
+# get the latest updater
+$ wget https://raw.githubusercontent.com/YoshitakaMo/localcolabfold/main/update_${OS}.sh -O update_${OS}.sh
 $ chmod +x update_${OS}.sh
-$ ./update_${OS}.sh /path/to/your/colabfold_batch
+# execute it.
+$ ./update_${OS}.sh .
 ```
 
 ## FAQ
@@ -158,15 +177,15 @@ $ ./update_${OS}.sh /path/to/your/colabfold_batch
 ## How do I reference this work?
 
 - Mirdita M, Schütze K, Moriwaki Y, Heo L, Ovchinnikov S and Steinegger M. ColabFold - Making protein folding accessible to all. <br />
-  bioRxiv (2021) doi: [10.1101/2021.08.15.456425](https://www.biorxiv.org/content/10.1101/2021.08.15.456425v2)
+  *Nature Methods* (2022) doi: [10.1038/s41592-022-01488-1](https://www.nature.com/articles/s41592-022-01488-1)
 - If you’re using **AlphaFold**, please also cite: <br />
   Jumper et al. "Highly accurate protein structure prediction with AlphaFold." <br />
-  Nature (2021) doi: [10.1038/s41586-021-03819-2](https://doi.org/10.1038/s41586-021-03819-2)
+  *Nature* (2021) doi: [10.1038/s41586-021-03819-2](https://doi.org/10.1038/s41586-021-03819-2)
 - If you’re using **AlphaFold-multimer**, please also cite: <br />
   Evans et al. "Protein complex prediction with AlphaFold-Multimer." <br />
-  biorxiv (2021) doi: [10.1101/2021.10.04.463034v1](https://www.biorxiv.org/content/10.1101/2021.10.04.463034v1)
+  *BioRxiv* (2021) doi: [10.1101/2021.10.04.463034v1](https://www.biorxiv.org/content/10.1101/2021.10.04.463034v1)
 - If you are using **RoseTTAFold**, please also cite: <br />
   Minkyung et al. "Accurate prediction of protein structures and interactions using a three-track neural network." <br />
-  Science (2021) doi: [10.1126/science.abj8754](https://doi.org/10.1126/science.abj8754)
+  *Science* (2021) doi: [10.1126/science.abj8754](https://doi.org/10.1126/science.abj8754)
 
 [![DOI](https://zenodo.org/badge/doi/10.5281/zenodo.5123296.svg)](https://doi.org/10.5281/zenodo.5123296)
