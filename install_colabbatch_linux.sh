@@ -32,7 +32,7 @@ colabfold-conda/bin/python3.7 -m pip install jax==0.3.13
 mkdir -p $COLABFOLDDIR/bin
 cd $COLABFOLDDIR/bin
 cat << EOF > colabfold_batch
-#!/bin/sh
+#!/bin/bash
 export TF_FORCE_UNIFIED_MEMORY="1"
 export XLA_PYTHON_CLIENT_MEM_FRACTION="4.0"
 export COLABFOLDDIR=$COLABFOLDDIR

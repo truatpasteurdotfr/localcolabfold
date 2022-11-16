@@ -9,7 +9,6 @@ export PYTHONPATH=${COLABFOLDDIR}
 
 export TF_FORCE_UNIFIED_MEMORY="1"
 export XLA_PYTHON_CLIENT_MEM_FRACTION="4.0"
-export COLABFOLDDIR=/app/colabfold_batch
 export PATH="${COLABFOLDDIR}/colabfold-conda/bin:$PATH"
 
 if [ $# -ge 1 ]; then
