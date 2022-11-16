@@ -14,7 +14,7 @@ export PATH="${COLABFOLDDIR}/colabfold-conda/bin:$PATH"
 
 if [ $# -ge 1 ]; then
 echo running python3.7 ${COLABFOLDDIR}/colabfold_batch "$@" from conda  ${COLABFOLDDIR}/colabfold-conda env
-python3.7 ${COLABFOLDDIR}/colabfold_batch "$@"
+python3.7 ${COLABFOLDDIR}/bin/colabfold_batch "$@"
 fi
 
 
