@@ -11,7 +11,7 @@ export TF_FORCE_UNIFIED_MEMORY="1"
 export XLA_PYTHON_CLIENT_MEM_FRACTION="4.0"
 export PATH="${COLABFOLDDIR}/colabfold-conda/bin:$PATH"
 
-echo running python3.7 ${COLABFOLDDIR}/colabfold_batch "$@" from conda  ${COLABFOLDDIR}/colabfold-conda env
+echo running ${COLABFOLDDIR}/colabfold_batch "$@" from conda  ${COLABFOLDDIR}/colabfold-conda env
 ${COLABFOLDDIR}/bin/colabfold_batch "$@"
 
 
