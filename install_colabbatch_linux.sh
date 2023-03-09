@@ -25,7 +25,8 @@ chmod +x update_linux.sh
 conda install -c conda-forge -c bioconda kalign3=3.2.2 hhsuite=3.3.0 -y
 # Tru: possible missing chardet 2022/03/07 (place holder from previous version)
 # conda install chardet  -y
-
+# cleanup
+conda clean --all --yes
 
 # install ColabFold and Jaxlib
 # colabfold-conda/bin/python3.9 -m pip install "colabfold[alphafold] @ git+https://github.com/sokrypton/ColabFold"
